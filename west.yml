@@ -12,6 +12,7 @@ manifest:
       revision: v4.3.0
       import:
         name-allowlist:
+          - mbedtls
           - hal_espressif
 
   self:
