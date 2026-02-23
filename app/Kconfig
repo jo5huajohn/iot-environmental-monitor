@@ -1,5 +1,13 @@
 # SPDX-License-Identifier: Apache-2.0
 
-mainmenu "IoT Environmental Monitor"
+menu "IoT Environmental Monitor"
+
+config SENSOR_READ_INTERVAL
+	int "Sensor read interval (seconds)"
+	default 60
+	help
+	  Interval in seconds between sensor readings.
+
+endmenu
 
 source "Kconfig.zephyr"
