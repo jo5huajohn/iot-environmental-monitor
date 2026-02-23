@@ -10,4 +10,14 @@ config SENSOR_READ_INTERVAL
 
 endmenu
 
+config WIFI_SSID
+	string "Wi-Fi SSID"
+	help
+	  SSID of the Wi-Fi network to connect to.
+
+config WIFI_PSK
+	string "Wi-Fi PSK"
+	help
+	  Pre-shared key (password) for the Wi-Fi network.
+
 source "Kconfig.zephyr"

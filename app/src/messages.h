@@ -4,7 +4,7 @@
 #include <stdbool.h>
 #include <zephyr/types.h>
 
-struct l4_state {
+struct net_state {
     bool is_connected;
 };
 
