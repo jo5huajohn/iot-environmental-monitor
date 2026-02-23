@@ -5,6 +5,11 @@
 	"workspaceFolder": "/workspaces/zephyrproject",
 	"onCreateCommand": "bash -i /workspaces/zephyrproject/iot-environmental-monitor/.devcontainer/onCreateCommand.sh",
 
+	"runArgs": [
+		"-v", "/dev:/dev",
+		"--privileged"	// Allow access to tty* devices
+	],
+
 	"customizations": {
 		"vscode": {
 			"extensions": [
@@ -17,9 +22,12 @@
 				"C_Cpp.default.cppStandard": "c++11",
 				"C_Cpp.default.cStandard": "c17",
 				"C_Cpp.default.intelliSenseMode": "linux-gcc-arm",
+				"C_Cpp.default.compileCommands": [
+					"/workspaces/zephyrproject/iot-environmental-monitor/app/build/compile_commands.json"
+				],
 				"cmake.configureOnOpen": false,
-                "terminal.integrated.defaultProfile.linux": "bash (2)",
-                "terminal.integrated.profiles.linux": { "zsh": { "path": "/bin/bash" } }
+				"terminal.integrated.defaultProfile.linux": "bash (2)",
+				"terminal.integrated.profiles.linux": { "zsh": { "path": "/bin/bash" } }
 			}
 		}
 	},
