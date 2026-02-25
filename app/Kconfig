@@ -8,8 +8,6 @@ config SENSOR_READ_INTERVAL
 	help
 	  Interval in seconds between sensor readings.
 
-endmenu
-
 config WIFI_SSID
 	string "Wi-Fi SSID"
 	help
@@ -19,5 +17,7 @@ config WIFI_PSK
 	string "Wi-Fi PSK"
 	help
 	  Pre-shared key (password) for the Wi-Fi network.
+
+endmenu
 
 source "Kconfig.zephyr"
