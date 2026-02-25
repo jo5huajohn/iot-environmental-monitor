@@ -30,7 +30,7 @@ ZBUS_CHAN_DEFINE(sensor_data_chan,
                  struct sensor_reading,
                  NULL,
                  NULL,
-                 ZBUS_OBSERVERS(),
+                 ZBUS_OBSERVERS(mqtt_sub),
                  ZBUS_MSG_INIT(.timestamp_ms = 0, .temperature_mc = 0,
                                .humidity = 0, .pressure = 0));
 

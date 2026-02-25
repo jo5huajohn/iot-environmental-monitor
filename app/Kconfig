@@ -18,6 +18,32 @@ config WIFI_PSK
 	help
 	  Pre-shared key (password) for the Wi-Fi network.
 
+config MQTT_BROKER_ADDR
+	string "MQTT broker address"
+	help
+	  IP address of the MQTT broker.
+
+config MQTT_BROKER_PORT
+	int "MQTT broker port"
+	default 1883
+	help
+	  Port number of the MQTT broker.
+	  Standard MQTT port is 1883, for TLS use 8883.
+
+config MQTT_CLIENTID
+	string "MQTT client ID"
+	default "esp32c6-monitor"
+	help
+	  Client ID to use when connecting to the MQTT broker.
+	  Must be unique for each client connecting to the same broker.
+
+config MQTT_MAX_RETRY_COUNT
+	int "MQTT max retry count"
+	default 5
+	help
+	  Maximum number of retries for MQTT connection attempts.
+	  Set to 0 for infinite retries.
+
 endmenu
 
 source "Kconfig.zephyr"

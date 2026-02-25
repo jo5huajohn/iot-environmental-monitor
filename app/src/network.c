@@ -11,7 +11,7 @@ ZBUS_CHAN_DEFINE(net_state_chan,
                  struct net_state,
                  NULL,
                  NULL,
-                 ZBUS_OBSERVERS(),
+                 ZBUS_OBSERVERS(mqtt_sub),
                  ZBUS_MSG_INIT(.is_connected = false));
 
 #define WIFI_EVENT_MASK                                                        \
