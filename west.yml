@@ -5,7 +5,6 @@ manifest:
   remotes:
     - name: zephyrproject-rtos
       url-base: https://github.com/zephyrproject-rtos
-
   projects:
     - name: zephyr
       remote: zephyrproject-rtos
@@ -14,8 +13,6 @@ manifest:
         name-allowlist:
           - mbedtls
           - hal_espressif
-
   self:
-    west-commands: scripts/west-commands.yml
-
+    path: app
   version: "0.13"

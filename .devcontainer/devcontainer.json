@@ -1,9 +1,6 @@
 {
 	"name": "Zephyr Dev Container",
 	"image": "ghcr.io/zephyrproject-rtos/zephyr-build:main",
-	"workspaceMount": "source=${localWorkspaceFolder},target=/workspaces/zephyrproject/iot-environmental-monitor,type=bind",
-	"workspaceFolder": "/workspaces/zephyrproject",
-	"onCreateCommand": "bash -i /workspaces/zephyrproject/iot-environmental-monitor/.devcontainer/onCreateCommand.sh",
 
 	"runArgs": [
 		"-v", "/dev:/dev",
@@ -27,10 +24,13 @@
 				],
 				"cmake.configureOnOpen": false,
 				"terminal.integrated.defaultProfile.linux": "bash (2)",
-				"terminal.integrated.profiles.linux": { "zsh": { "path": "/bin/bash" } }
+				"terminal.integrated.profiles.linux": {
+					"bash": {
+						"path": "/bin/bash"
+					}
+				}
 			}
 		}
 	},
-
 	"remoteUser": "root"
 }
