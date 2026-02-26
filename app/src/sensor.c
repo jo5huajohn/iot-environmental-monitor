@@ -12,10 +12,11 @@ LOG_MODULE_REGISTER(iem_sensor, CONFIG_LOG_DEFAULT_LEVEL);
 
 #include "messages.h"
 
+#define BUFFER_SIZE                         128
 #define DEVICE_READINESS_CHECK_INTERVAL_SEC 5
-#define BUFFER_SIZE                 128
-#define PRIORITY_SENSOR             7
-#define SENSOR_STACK_SIZE           2048
+
+#define SENSOR_THREAD_PRIORITY      7
+#define SENSOR_THREAD_STACK_SIZE    2048
 
 static const struct device *const dev = DEVICE_DT_GET_ANY(bosch_bme680);
 
@@ -64,7 +65,7 @@ static void sensor_thread(void *arg1, void *arg2, void *arg3)
     while (1) {
         int rc = sensor_read(&iodev, &rtio_ctx, buf, BUFFER_SIZE);
         if (rc != 0) {
-            LOG_ERR("%s: sensor_read() failed: %d", dev->name, rc);
+            LOG_ERR("%s: sensor_read() failed: %s.", dev->name, strerror(rc));
             k_sleep(K_SECONDS(60));
             continue;
         }
@@ -75,7 +76,7 @@ static void sensor_thread(void *arg1, void *arg2, void *arg3)
 
         rc = sensor_get_decoder(dev, &decoder);
         if (rc != 0) {
-            LOG_ERR("%s: Failed to get decoder: %d", dev->name, rc);
+            LOG_ERR("%s: Failed to get decoder: %s.", dev->name, strerror(rc));
             continue;
         }
 
@@ -119,5 +120,5 @@ static void sensor_thread(void *arg1, void *arg2, void *arg3)
     }
 }
 
-K_THREAD_DEFINE(sensor_thread_id, SENSOR_STACK_SIZE, sensor_thread, NULL, NULL,
-                NULL, PRIORITY_SENSOR, 0, 0);
+K_THREAD_DEFINE(sensor_thread_id, SENSOR_THREAD_STACK_SIZE, sensor_thread, NULL, NULL,
+                NULL, SENSOR_THREAD_PRIORITY, 0, 0);

@@ -9,9 +9,9 @@ LOG_MODULE_REGISTER(iem_mqtt_client, CONFIG_LOG_DEFAULT_LEVEL);
 
 #include "messages.h"
 
-#define MQTT_THREAD_STACK_SIZE  4096
-#define MQTT_THREAD_PRIORITY    7
 #define MQTT_THREAD_DELAY_MS    5000
+#define MQTT_THREAD_PRIORITY    8
+#define MQTT_THREAD_STACK_SIZE  4096
 
 #define MQTT_CONNECT_FAILURE_BACKOFF_SEC 30
 #define MQTT_PAYLOAD_SIZE       256
@@ -64,7 +64,7 @@ static void mqtt_event_handler(struct mqtt_client *const c, const struct mqtt_ev
 static int mqtt_connect_to_broker(void)
 {
     struct zsock_pollfd fds;
-    int rc;
+    int rc = 0;
     int attempt = 0;
 
     struct sockaddr_in *broker4 = (struct sockaddr_in *)&broker;
@@ -94,8 +94,7 @@ static int mqtt_connect_to_broker(void)
 
         rc = mqtt_connect(&client);
         if (rc != 0) {
-            LOG_WRN("mqtt_connect failed (%d), attempt %d.",
-                rc, attempt + 1);
+            LOG_WRN("mqtt_connect failed: %s, attempt %d.", strerror(rc), attempt + 1);
             attempt++;
             continue;
         }
@@ -105,7 +104,7 @@ static int mqtt_connect_to_broker(void)
 
         rc = zsock_poll(&fds, 1, 5 * MSEC_PER_SEC);
         if (rc <= 0) {
-            LOG_WRN("CONNACK timeout, attempt %d", attempt + 1);
+            LOG_WRN("CONNACK timeout, attempt %d.", attempt + 1);
             mqtt_disconnect(&client, NULL);
             mqtt_connected = false;
             attempt++;
@@ -114,7 +113,7 @@ static int mqtt_connect_to_broker(void)
 
         rc = mqtt_input(&client);
         if (rc != 0) {
-            LOG_WRN("mqtt_input failed (%d), attempt %d",
+            LOG_WRN("mqtt_input failed (%d), attempt %d.",
                 rc, attempt + 1);
             mqtt_disconnect(&client, NULL);
             mqtt_connected = false;
@@ -123,11 +122,11 @@ static int mqtt_connect_to_broker(void)
         }
 
         if (mqtt_connected) {
-            LOG_INF("MQTT ready (attempt %d)", attempt + 1);
+            LOG_INF("MQTT ready (attempt %d).", attempt + 1);
             return 0;
         }
 
-        LOG_WRN("CONNACK rejected by broker, attempt %d", attempt + 1);
+        LOG_WRN("CONNACK rejected by broker, attempt %d,", attempt + 1);
         mqtt_disconnect(&client, NULL);
         attempt++;
 
@@ -143,11 +142,11 @@ static void service_mqtt_connection(void)
         .fd     = client.transport.tcp.sock,
         .events = ZSOCK_POLLIN,
     };
-    int rc;
+    int rc = 0;
 
     rc = zsock_poll(&fds, 1, 0);
     if (rc < 0) {
-        LOG_ERR("poll error %d, dropping MQTT connection", errno);
+        LOG_ERR("poll error %s, dropping MQTT connection.", strerror(errno));
         mqtt_connected = false;
         return;
     }
@@ -155,7 +154,7 @@ static void service_mqtt_connection(void)
     if (rc > 0 && (fds.revents & ZSOCK_POLLIN)) {
         rc = mqtt_input(&client);
         if (rc != 0) {
-            LOG_ERR("mqtt_input error %d, dropping connection", rc);
+            LOG_ERR("mqtt_input error %s, dropping connection.", strerror(rc));
             mqtt_connected = false;
             return;
         }
@@ -163,7 +162,7 @@ static void service_mqtt_connection(void)
 
     rc = mqtt_live(&client);
     if (rc != 0 && rc != -EAGAIN) {
-        LOG_ERR("mqtt_live error %d, dropping connection", rc);
+        LOG_ERR("mqtt_live error %s, dropping connection.", strerror(rc));
         mqtt_connected = false;
     }
 }
@@ -190,21 +189,25 @@ static int publish_to_topic(const char *topic, const char *payload)
     };
 
     int rc = mqtt_publish(&client, &param);
-
     if (rc != 0) {
-        LOG_ERR("mqtt_publish(%s) failed: %d", topic, rc);
+        LOG_ERR("mqtt_publish(%s) failed: %s.", topic, strerror(rc));
     } else {
-        LOG_DBG("%s -> %s", topic, payload);
+        LOG_DBG("%s: %s.", topic, payload);
     }
 
     return rc;
+}
+
+static inline double convert_to_base(const uint32_t value)
+{
+    return ((float)value / 1000.0f) + ((float)(value % 1000) / 1000.0f);
 }
 
 static void publish_sensor_data(const struct sensor_reading *reading)
 {
     char buf[32];
 
-    int32_t temp_int  = reading->temperature_mc / 1000;
+    int32_t temp_int = reading->temperature_mc / 1000;
     int32_t temp_frac = reading->temperature_mc % 1000;
     if (temp_frac < 0) {
         temp_frac = -temp_frac;
@@ -216,10 +219,10 @@ static void publish_sensor_data(const struct sensor_reading *reading)
     }
     publish_to_topic(TOPIC_TEMPERATURE, buf);
 
-    snprintk(buf, sizeof(buf), "%u.%03u", reading->humidity / 1000, reading->humidity % 1000);
+    snprintk(buf, sizeof(buf), "%0.3f", convert_to_base(reading->humidity));
     publish_to_topic(TOPIC_HUMIDITY, buf);
 
-    snprintk(buf, sizeof(buf), "%u.%03u", reading->pressure / 1000, reading->pressure % 1000);
+    snprintk(buf, sizeof(buf), "%0.3f", convert_to_base(reading->pressure));
     publish_to_topic(TOPIC_PRESSURE, buf);
 }
 
@@ -236,7 +239,7 @@ static void mqtt_thread(void *arg1, void *arg2, void *arg3)
 
     while (1) {
         rc = zbus_sub_wait_msg(&mqtt_sub, &chan, &msg, K_MSEC(MQTT_POLL_TIMEOUT_MS));
-if (rc == 0) {
+        if (rc == 0) {
             if (chan == &net_state_chan) {
                 net_connected = msg.net.is_connected;
                 if (!net_connected && mqtt_connected) {
