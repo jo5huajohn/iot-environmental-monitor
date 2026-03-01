@@ -1,0 +1,15 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/**"
+            ],
+            "defines": [],
+            "configurationProvider": "nordic-semiconductor.nrf-connect",
+            "cStandard": "c17",
+            "cppStandard": "c++11"
+        }
+    ],
+    "version": 4
+}

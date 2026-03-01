@@ -1,21 +1,17 @@
 {
 	"name": "Zephyr Dev Container",
 	"image": "ghcr.io/zephyrproject-rtos/zephyr-build:main",
-
 	"runArgs": [
 		"-v", "/dev:/dev",
 		"--privileged"	// Allow access to tty* devices
 	],
-
 	"customizations": {
 		"vscode": {
 			"extensions": [
 				"ms-vscode.cpptools",
 				"nordic-semiconductor.nrf-connect-extension-pack",
 				"timonwong.shellcheck"
-			],
-			"settings": {
-			}
+			]
 		}
 	},
 	"remoteUser": "root"

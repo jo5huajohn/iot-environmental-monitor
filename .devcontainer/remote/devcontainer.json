@@ -7,23 +7,7 @@
 				"ms-vscode.cpptools",
 				"nordic-semiconductor.nrf-connect-extension-pack",
 				"timonwong.shellcheck"
-			],
-			"settings": {
-				"C_Cpp.default.compilerPath": "/opt/toolchains/zephyr-sdk-0.17.4/riscv64-zephyr-elf/bin/riscv64-zephyr-elf-gcc",
-				"C_Cpp.default.cppStandard": "c++11",
-				"C_Cpp.default.cStandard": "c17",
-				"C_Cpp.default.intelliSenseMode": "linux-gcc-arm",
-				"C_Cpp.default.compileCommands": [
-					"/workspaces/zephyrproject/iot-environmental-monitor/app/build/compile_commands.json"
-				],
-				"cmake.configureOnOpen": false,
-				"terminal.integrated.defaultProfile.linux": "bash (2)",
-				"terminal.integrated.profiles.linux": {
-					"bash": {
-						"path": "/bin/bash"
-					}
-				}
-			}
+			]
 		}
 	}
 }
