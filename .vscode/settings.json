@@ -1,0 +1,13 @@
+{
+	"C_Cpp.default.compileCommands": [
+		"/workspaces/iot-environmental-monitor/app/build/compile_commands.json"
+	],
+    "C_Cpp.default.compilerPath": "/opt/toolchains/zephyr-sdk-0.17.4/riscv64-zephyr-elf/bin/riscv64-zephyr-elf-gcc",
+    "C_Cpp.default.cppStandard": "c++11",
+    "C_Cpp.default.cStandard": "c17",
+    "C_Cpp.default.intelliSenseMode": "linux-gcc-arm",
+    "nrf-connect.applications": [
+        "${workspaceFolder}/app"
+    ],
+    "terminal.integrated.defaultProfile.linux": "bash (2)"
+}
