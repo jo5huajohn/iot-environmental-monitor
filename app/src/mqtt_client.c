@@ -1,5 +1,5 @@
 #include <zephyr/logging/log.h>
-LOG_MODULE_REGISTER(iem_mqtt_client, CONFIG_LOG_DEFAULT_LEVEL);
+LOG_MODULE_REGISTER(iem_mqtt_client, LOG_LEVEL_DBG);
 
 #include <string.h>
 #include <zephyr/kernel.h>
@@ -198,11 +198,6 @@ static int publish_to_topic(const char *topic, const char *payload)
     return rc;
 }
 
-static inline double convert_to_base(const uint32_t value)
-{
-    return ((float)value / 1000.0f) + ((float)(value % 1000) / 1000.0f);
-}
-
 static void publish_sensor_data(const struct sensor_reading *reading)
 {
     char buf[32];
@@ -219,10 +214,14 @@ static void publish_sensor_data(const struct sensor_reading *reading)
     }
     publish_to_topic(TOPIC_TEMPERATURE, buf);
 
-    snprintk(buf, sizeof(buf), "%0.3f", convert_to_base(reading->humidity));
+    snprintk(buf, sizeof(buf), "%u.%03u",
+             reading->humidity / 1000,
+             reading->humidity % 1000);
     publish_to_topic(TOPIC_HUMIDITY, buf);
 
-    snprintk(buf, sizeof(buf), "%0.3f", convert_to_base(reading->pressure));
+    snprintk(buf, sizeof(buf), "%u.%03u",
+             reading->pressure / 1000,
+             reading->pressure % 1000);
     publish_to_topic(TOPIC_PRESSURE, buf);
 }
 
