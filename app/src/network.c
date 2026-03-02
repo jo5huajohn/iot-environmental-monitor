@@ -74,7 +74,23 @@ static void net_event_handler(struct net_mgmt_event_callback *cb, uint64_t mgmt_
 {
     switch (mgmt_event) {
     case NET_EVENT_WIFI_CONNECT_RESULT:
-        LOG_INF("WiFi connection established.");
+        const struct wifi_status *status = (const struct wifi_status *)cb->info;
+        switch (status->conn_status) {
+            case WIFI_STATUS_CONN_SUCCESS:
+            LOG_INF("WiFi connection established.");
+            break;
+            case WIFI_STATUS_CONN_FAIL:
+            LOG_ERR("WiFi connection failed.");
+            break;
+            case WIFI_STATUS_CONN_TIMEOUT:
+            LOG_ERR("WiFi connection timed out.");
+            break;
+            case WIFI_STATUS_CONN_WRONG_PASSWORD:
+            LOG_ERR("Incorrect WiFi password.");
+            break;
+            default:
+            break;
+        }
         break;
     case NET_EVENT_WIFI_DISCONNECT_RESULT:
         LOG_INF("WiFi disconnected.");
