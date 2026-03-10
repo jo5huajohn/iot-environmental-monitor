@@ -1,9 +1,11 @@
 {
 	"name": "Zephyr Dev Container",
-	"image": "ghcr.io/zephyrproject-rtos/zephyr-build:main",
+	"build": {
+		"dockerfile": "Dockerfile"
+	},
 	"runArgs": [
 		"-v", "/dev:/dev",
-		"--privileged"	// Allow access to tty* devices
+		"--privileged"
 	],
 	"customizations": {
 		"vscode": {
@@ -13,6 +15,5 @@
 				"timonwong.shellcheck"
 			]
 		}
-	},
-	"remoteUser": "root"
+	}
 }
