@@ -1,6 +1,12 @@
 {
 	"name": "Zephyr Dev Container",
-	"image": "ghcr.io/zephyrproject-rtos/zephyr-build:main",
+	"build": {
+		"dockerfile": "Dockerfile"
+	},
+	"runArgs": [
+		"-v", "/dev:/dev",
+		"--privileged"
+	],
 	"customizations": {
 		"vscode": {
 			"extensions": [
