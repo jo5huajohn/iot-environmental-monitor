@@ -1,1 +1,5 @@
-build/
+build*/
+
+.west/
+modules/
+zephyr/
